@@ -26,19 +26,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     /// HUD constants
     private let SCORE_HUD_NAME = "scoreHud"
     private let LIVES_HUD_NAME = "livesLeftHud"
+    private let HIGHSCORE_HUD_NAME = "highscoreHud"
     private let LEFT_MOVEMENT_NAME = "leftButton"
     private let RIGHT_MOVEMENT_NAME = "rightButton"
     private let FIRE_BUTTON_NAME = "fireButton"
-    private let BUTTON_SIZE = CGSize(width: 40, height: 40)
+    private let PAUSE_PLAY_NAME = "pauseOrPlay"
+    private let BUTTON_SIZE = CGSize(width: 60, height: 60)
     private let BUTTON_OFFSET : CGFloat = 15
     /// BITMASK constants for contact detection (not collision detection, we don't want physics)
     // NOTE: We can have a maximum of 32 of these, because they must be unique.
-    private let INVADER_BULLET_BITMASK: UInt32 = 0x1 << 0
-    private let INVADER_BITMASK: UInt32 = 0x1 << 1
-    private let CORE_CANNON_BULLET_BITMASK: UInt32 = 0x1 << 2
-    private let CORE_CANNON_BITMASK: UInt32 = 0x1 << 3
+    private let INVADER_BULLET_BITMASK : UInt32 = 0x1 << 0
+    private let INVADER_BITMASK : UInt32 = 0x1 << 1
+    private let CORE_CANNON_BULLET_BITMASK : UInt32 = 0x1 << 2
+    private let CORE_CANNON_BITMASK:  UInt32 = 0x1 << 3
     /// endgame detection constants
-    private let INVADER_MINIMUM_HEIGHT: Float = 85 // 3 * BUTTON_OFFSET + BUTTON_SIZE.height
+    private let INVADER_MINIMUM_HEIGHT : Float = 105 // 3 * BUTTON_OFFSET + BUTTON_SIZE.height
+    /// data persistance constance
+    private let HIGHSCORE_KEY : String = "highscore key"
     
     // MARK: PRIVATE VARIABLES
     
@@ -57,10 +61,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var contactQueue = [SKPhysicsContact]()
     /// Tracks the user's current score
     private var score : Int = 0
+    private var highScore : Int = 0
     /// Tracks how many lives the user has left.
     private var livesLeft : Int = 3
     /// Tracks if we have displayed the game over scene
     private var gameHasEnded : Bool = false
+    private var gamePaused : Bool = false
     /// An enum for controlling the set of possible space invaders
     private enum InvaderType {
         case a
@@ -130,7 +136,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private func setupInvaders() {
         // Establish the starting point of where we create the army
         // one third from the right of the screen and one half from
-        // the bottom of the screen.
+        // the bottom of the screen + offset from controls.
         let baseOrigin = CGPoint(x: size.width / 3, y: size.height / 2 + 2.0 * self.BUTTON_OFFSET + self.BUTTON_SIZE.height)
         
         for row in 1...self.INVADER_ROW_COUNT {
@@ -176,8 +182,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabel.text = String(format: "Score: %04u", self.score)
         scoreLabel.position = CGPoint(x: frame.size.width / 2,
                                       y: size.height - (60 - scoreLabel.frame.size.height / 2))
-        // the score label to the scene
         self.addChild(scoreLabel)
+        
+        // setup the label which is the high score
+        self.highScore = loadHighScore()
+        let highScoreLabel = SKLabelNode(fontNamed: "Courier")
+        highScoreLabel.name = self.HIGHSCORE_HUD_NAME
+        highScoreLabel.fontSize = 15
+        highScoreLabel.fontColor = SKColor.green
+        highScoreLabel.text = String(format: "High Score: %04u", self.highScore)
+        highScoreLabel.position = CGPoint(x: frame.size.width / 2,
+                                          y: scoreLabel.frame.minY - highScoreLabel.frame.size.height)
+        self.addChild(highScoreLabel)
         
         // setup the label which tells the user how many lives they have left
         let livesLabel = SKLabelNode(fontNamed: "Courier")
@@ -186,7 +202,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         livesLabel.fontColor = SKColor.red
         livesLabel.text = String(format: "Lives: %01u", self.livesLeft)
         livesLabel.position = CGPoint(x: frame.size.width / 2,
-                                      y: scoreLabel.frame.minY - livesLabel.frame.size.height)
+                                      y: highScoreLabel.frame.minY - livesLabel.frame.size.height)
         self.addChild(livesLabel)
         
         // setup the buttons which lets the user move the core cannon left and right
@@ -204,10 +220,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let fireButton = SKSpriteNode(color: SKColor.orange, size: self.BUTTON_SIZE)
         fireButton.name = self.FIRE_BUTTON_NAME
         fireButton.position = CGPoint(x: self.BUTTON_OFFSET + fireButton.frame.size.width / 2, y: BUTTON_OFFSET + fireButton.frame.size.height / 2)
+        
+        let pausePlayButton = SKSpriteNode(color: SKColor.gray, size: self.BUTTON_SIZE)
+        pausePlayButton.name = self.PAUSE_PLAY_NAME
+        pausePlayButton.position = CGPoint(x: self.frame.size.width - self.BUTTON_OFFSET - pausePlayButton.frame.size.width / 2, y: self.frame.height - self.BUTTON_OFFSET - pausePlayButton.frame.size.height / 2)
+        
         // Add the buttons to the scene
         self.addChild(leftButton)
         self.addChild(rightButton)
         self.addChild(fireButton)
+        self.addChild(pausePlayButton)
+        
+        // Add a line directly below the core cannon which represents the ground
+        let point1 = CGPoint(x: 0, y: 2.0 * self.BUTTON_OFFSET + self.BUTTON_SIZE.height)
+        let point2 = CGPoint(x: self.size.width, y: 2.0 * self.BUTTON_OFFSET + self.BUTTON_SIZE.height)
+        
+        let pathToDraw:CGMutablePath = CGMutablePath.init()
+        let myLine:SKShapeNode = SKShapeNode(path:pathToDraw)
+
+        pathToDraw.move(to: point1)
+        pathToDraw.addLine(to: point2)
+
+        myLine.path = pathToDraw
+        myLine.strokeColor = SKColor.green
+
+        self.addChild(myLine)
     }
     
     /**
@@ -419,6 +456,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.rightIsPressed = false
             } else if touchedNode.name == self.FIRE_BUTTON_NAME {
                 fireTheCoreCannon()
+            } else if touchedNode.name == self.PAUSE_PLAY_NAME {
+                self.isPaused = !self.isPaused
+                // TODO switch out the icons when I have them.
             }
         }
     }
@@ -450,6 +490,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
      Updates the scene at a target rate of 60 times a second
      */
     override func update(_ currentTime: TimeInterval) {
+        if isPaused {
+            return // do nothing, we're paused
+        }
         if isGameOver() {
             endGame()
         }
@@ -464,14 +507,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         fireInvaderBullets(forUpdate: currentTime)
     }
-    
+        
     /**
      Moves the invading army down the screen and back and forth.
      
      - Parameter currentTime: A CFTimeInterval for the current time in the game loop.
     */
     private func moveInvaders(forUpdate currentTime: CFTimeInterval) {
-        if (currentTime - timeOfLastMove < self.invaderSpeed) {
+        if (currentTime - self.timeOfLastMove < self.invaderSpeed) {
             return // do nothing until it is time.
         }
         determineInvaderDirection()
@@ -662,6 +705,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if let score = childNode(withName: self.SCORE_HUD_NAME) as? SKLabelNode {
           score.text = String(format: "Score: %04u", self.score)
         }
+        
+        if self.score > self.highScore {
+            // save the new high score
+            self.highScore = self.score
+            saveHighScore(score: self.highScore)
+            if let highScore = childNode(withName: self.HIGHSCORE_HUD_NAME) as? SKLabelNode {
+                highScore.text = String(format: "High Score: %04u", self.highScore)
+            }
+        }
     }
     
     /**
@@ -735,4 +787,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             modifyScore(by: 100) // Stretch Goal: Find a way to modify the score based on invader type.
         }
     }
+    
+    // MARK: HIGH SCORE PERSISTANCE
+    
+    /**
+     Uses NSUserDefaults to save the user's high score
+     - Parameter score: An Integer which is the new high score we wish to save.
+     */
+    func saveHighScore(score: Int) {
+        UserDefaults.standard.set(score, forKey: self.HIGHSCORE_KEY)
+    }
+    
+    /**
+    Uses NSUserDefaults to retrieve the user's high score
+     - Returns: An Integer for the user's high score, or zero if there was no record of a high score.
+     */
+    func loadHighScore() -> Int {
+        return UserDefaults.standard.integer(forKey: self.HIGHSCORE_KEY)
+    }
+    
 }
