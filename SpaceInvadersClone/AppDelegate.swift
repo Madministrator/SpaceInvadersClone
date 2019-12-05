@@ -2,6 +2,8 @@
 //  AppDelegate.swift
 //  SpaceInvadersClone
 //
+//  This file was created automatically when I declared this project a game. I didn't change it in any way, but the project does not compile without it.
+//
 //  Created by Vander Hoeven, Evan on 11/7/19.
 //  Copyright © 2019 Vander Hoeven, Evan. All rights reserved.
 //

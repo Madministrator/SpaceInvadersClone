@@ -17,17 +17,15 @@ class GameViewController: UIViewController {
         
         // Configure the view.
         let skView = self.view as! SKView
-        skView.showsFPS = true
-        skView.showsNodeCount = true
+        skView.showsFPS = false
+        skView.showsNodeCount = false
         
         /* Sprite Kit applies additional optimizations to improve rendering performance */
         skView.ignoresSiblingOrder = true
         
         // Create and configure the scene.
-        let scene = GameScene(size: skView.frame.size)
+        let scene = MainMenuScene(size: skView.frame.size)
         skView.presentScene(scene)
-        
-        // TODO Pause the view (and thus the game) when the app is interrupted or backgrounded
     }
     
     override var prefersStatusBarHidden: Bool {
@@ -40,11 +38,6 @@ class GameViewController: UIViewController {
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return UIInterfaceOrientationMask.portrait
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Release any cached data, images, etc that aren't in use.
     }
     
     @objc func handleApplicationWillResignActive (_ note: Notification) {

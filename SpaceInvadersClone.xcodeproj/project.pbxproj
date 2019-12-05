@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F420E59D2399911300ACF929 /* MainMenuScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = F420E59C2399911300ACF929 /* MainMenuScene.swift */; };
 		F478C5E4237B37DC00BFABC9 /* GameOverScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = F478C5E3237B37DC00BFABC9 /* GameOverScene.swift */; };
 		F4CD287D2374A57F0042B7FC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4CD287C2374A57F0042B7FC /* AppDelegate.swift */; };
 		F4CD28812374A57F0042B7FC /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = F4CD28802374A57F0042B7FC /* Actions.sks */; };
@@ -55,6 +56,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F420E59C2399911300ACF929 /* MainMenuScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuScene.swift; sourceTree = "<group>"; };
 		F478C5E3237B37DC00BFABC9 /* GameOverScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverScene.swift; sourceTree = "<group>"; };
 		F4CD28792374A57F0042B7FC /* SpaceInvadersClone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpaceInvadersClone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4CD287C2374A57F0042B7FC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -146,6 +148,7 @@
 				F4CD28822374A57F0042B7FC /* GameScene.swift */,
 				F4CD28842374A57F0042B7FC /* GameViewController.swift */,
 				F478C5E3237B37DC00BFABC9 /* GameOverScene.swift */,
+				F420E59C2399911300ACF929 /* MainMenuScene.swift */,
 				F4CD28862374A57F0042B7FC /* Main.storyboard */,
 				F4CD28892374A5800042B7FC /* Assets.xcassets */,
 				F4CD288B2374A5800042B7FC /* LaunchScreen.storyboard */,
@@ -354,6 +357,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F420E59D2399911300ACF929 /* MainMenuScene.swift in Sources */,
 				F4CD28832374A57F0042B7FC /* GameScene.swift in Sources */,
 				F4CD28852374A57F0042B7FC /* GameViewController.swift in Sources */,
 				F478C5E4237B37DC00BFABC9 /* GameOverScene.swift in Sources */,

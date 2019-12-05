@@ -64,9 +64,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var highScore : Int = 0
     /// Tracks how many lives the user has left.
     private var livesLeft : Int = 3
+    /// determines, in the event that the endgame has been reached, if we have lost.
+    private var userHasLost : Bool = false
     /// Tracks if we have displayed the game over scene
     private var gameHasEnded : Bool = false
-    private var gamePaused : Bool = false
     /// An enum for controlling the set of possible space invaders
     private enum InvaderType {
         case a
@@ -278,6 +279,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let coreCannonRef = childNode(withName: self.CORE_CANNON_NAME)
         if coreCannonRef == nil {
             // Our core cannon is gone, we are dead.
+            self.userHasLost = true
             return true
         }
         // We return early in the other two cases so that we don't iterate
@@ -285,10 +287,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // The core cannon and the invaders are present, check to make sure
         // that the invaders haven't gotten too close to the bottom of the screen.
-        var invaderIsToClose = false;
+        var invaderIsToClose = false
         enumerateChildNodes(withName: InvaderType.name, using: { (node, stop) in
             if (Float(node.frame.minY) < self.INVADER_MINIMUM_HEIGHT) {
-                invaderIsToClose = true;
+                invaderIsToClose = true
+                self.userHasLost = true
                 stop.pointee = true // akin to break, leave enumerate child nodes early.
             }
         })
@@ -297,10 +300,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     private func endGame() {
         if !self.gameHasEnded {
-            self.gameHasEnded = true
-            let gameOverScene = GameOverScene(size: self.size)
-            
-            view?.presentScene(gameOverScene, transition: SKTransition.doorsOpenHorizontal(withDuration: 1.0))
+            if (userHasLost) {
+                self.gameHasEnded = true
+                let gameOverScene = GameOverScene(size: self.size)
+                view?.presentScene(gameOverScene, transition: SKTransition.doorsOpenHorizontal(withDuration: 1.0))
+            } else { // user has wiped out the aliens, make more aliens.
+                // TODO: make some fanfare before the reset to reward the player.
+                // remove all bullets from the scene
+                let invaderBullet = childNode(withName: BulletType.invaderBulletName)
+                if (invaderBullet != nil) {
+                    self.removeChildren(in: [invaderBullet!])
+                }
+                let coreCannonBullet = childNode(withName: BulletType.coreCannonBulletName)
+                if (coreCannonBullet != nil) {
+                    self.removeChildren(in: [coreCannonBullet!])
+                }
+                // Add more invaders to shoot
+                setupInvaders()
+            }
         }
     }
     

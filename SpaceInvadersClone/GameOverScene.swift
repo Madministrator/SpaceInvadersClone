@@ -11,6 +11,9 @@ import SpriteKit
 
 class GameOverScene : SKScene {
     
+    // MARK: Private constants
+    private let MAIN_MENU_NAME = "return to main menu"
+    private let PLAY_AGAIN_NAME = "play again"
     // MARK: Private variables
     private var labelsCreated = false
     
@@ -46,36 +49,41 @@ class GameOverScene : SKScene {
         playAgainLabel.fontSize = 25
         playAgainLabel.fontColor = SKColor.white
         playAgainLabel.text = "Play Again?"
+        playAgainLabel.name = self.PLAY_AGAIN_NAME
         // position the label below the game over label
-        playAgainLabel.position = CGPoint(x: self.size.width / 2, y: gameOverLabel.frame.origin.y - gameOverLabel.frame.size.height)
+        playAgainLabel.position = CGPoint(x: self.size.width / 2, y: gameOverLabel.frame.origin.y - gameOverLabel.frame.size.height * 2)
         // add the play again label to the scene
         self.addChild(playAgainLabel)
+        
+        // Create a label allowing the user to return to the main menu
+        let mainMenuLabel = SKLabelNode(fontNamed: "Courier")
+        mainMenuLabel.fontSize = 25
+        mainMenuLabel.fontColor = SKColor.white
+        mainMenuLabel.text = "Return to main menu"
+        mainMenuLabel.name = self.MAIN_MENU_NAME
+        // position the label below the play again label
+        mainMenuLabel.position = CGPoint(x: self.size.width / 2, y: playAgainLabel.frame.origin.y - mainMenuLabel.frame.size.height * 2)
+        self.addChild(mainMenuLabel)
         
         // get the void of space in the background
         self.backgroundColor = SKColor.black
     }
     
-    
-    /// TODO add documentation for each of these functions.
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
-    }
-    
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?)  {
-        
-    }
-    
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
-    }
-    
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?)  {
-        
-        let gameScene = GameScene(size: self.size)
-        gameScene.scaleMode = .aspectFill
-        
-        self.view?.presentScene(gameScene, transition: SKTransition.doorsCloseHorizontal(withDuration: 1.0))
-        
+        for touch in touches {
+            let location = touch.location(in: self)
+            let touchedNode = atPoint(location)
+            if touchedNode.name == self.PLAY_AGAIN_NAME {
+                // navigate to the game scene
+                let gameScene = GameScene(size: self.size)
+                gameScene.scaleMode = .aspectFill
+                self.view?.presentScene(gameScene, transition: SKTransition.doorsCloseHorizontal(withDuration: 1.0))
+            } else if touchedNode.name == self.MAIN_MENU_NAME {
+                // navigate to the main menu
+                let mainMenuScene = MainMenuScene(size: self.size)
+                mainMenuScene.scaleMode = .aspectFill
+                self.view?.presentScene(mainMenuScene, transition: SKTransition.doorway(withDuration: 1.0))
+            }
+        }
     }
 }
