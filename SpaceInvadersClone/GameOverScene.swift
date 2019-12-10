@@ -14,6 +14,7 @@ class GameOverScene : SKScene {
     // MARK: Private constants
     private let MAIN_MENU_NAME = "return to main menu"
     private let PLAY_AGAIN_NAME = "play again"
+    private let SHARE_NAME = "share"
     // MARK: Private variables
     private var labelsCreated = false
     
@@ -65,10 +66,25 @@ class GameOverScene : SKScene {
         mainMenuLabel.position = CGPoint(x: self.size.width / 2, y: playAgainLabel.frame.origin.y - mainMenuLabel.frame.size.height * 2)
         self.addChild(mainMenuLabel)
         
-        // get the void of space in the background
-        self.backgroundColor = SKColor.black
+        // Create a button that allows a person to share their high score
+        // ONLY if we have the data necessary to display the activityController
+        if let _ = self.view {
+            let shareLabel = SKLabelNode(fontNamed: "Courier")
+            shareLabel.fontSize = 25
+            shareLabel.fontColor = SKColor.white
+            shareLabel.text = "Share your High Score"
+            shareLabel.name = self.SHARE_NAME
+            // position the label below the main menu label
+            shareLabel.position = CGPoint(x: self.size.width / 2, y: mainMenuLabel.frame.origin.y - shareLabel.frame.size.height * 2)
+            self.addChild(shareLabel)
+        }
     }
     
+    /**
+     Handles the presses when the user has lifted their finger from a button.
+     - Parameter touches: A set of UITouches which we check if they lie on any of our buttons.
+     - Parameter event: An optional UIEvent, not used in this implementation.
+     */
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?)  {
         for touch in touches {
             let location = touch.location(in: self)
@@ -83,7 +99,25 @@ class GameOverScene : SKScene {
                 let mainMenuScene = MainMenuScene(size: self.size)
                 mainMenuScene.scaleMode = .aspectFill
                 self.view?.presentScene(mainMenuScene, transition: SKTransition.doorway(withDuration: 1.0))
+            } else if touchedNode.name == self.SHARE_NAME {
+                shareHighScore()
             }
+        }
+    }
+    
+    /**
+     Allows the user to share a brief message about their high score and the score they got in the game.
+     */
+    func shareHighScore() {
+        // Create a message for the user to share.
+        let gameScene = GameScene(size: self.size)
+        let message = String(format: "Check out my high score in this space invaders clone! My high score is %04u", gameScene.loadHighScore())
+        // Create an activity controller which can share the user's info.
+        let activityController = UIActivityViewController(activityItems: [message], applicationActivities: nil)
+        activityController.popoverPresentationController?.sourceView = self.view
+        // Present the activity controller to the user
+        if let hostViewController = self.view?.window?.rootViewController {
+            hostViewController.present(activityController, animated: true, completion: nil)
         }
     }
 }
