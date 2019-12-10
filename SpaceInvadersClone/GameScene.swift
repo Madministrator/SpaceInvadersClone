@@ -19,6 +19,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private let INVADER_COLUMN_COUNT = 6
     private let INVADER_VELOCITY : CGFloat = 10 // move the invaders 10 pixels per interval
     private let INVADER_MINIMUM_SPEED : CFTimeInterval = 0.03
+    private let INVADER_BULLET_VELOCITY : CGFloat = 2.5
     /// Core cannon constants
     private let CORE_CANNON_SIZE = CGSize(width: 30, height: 16)
     private let CORE_CANNON_NAME = "coreCannon" // Built for easy lookup later.
@@ -642,8 +643,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 // setup a destination to the ground below th core cannon
                 let bulletDestination = CGPoint(x: invader.position.x, y: 2.0 * self.BUTTON_OFFSET + self.BUTTON_SIZE.height  + (bullet.frame.size.height / 2))
                 
+                // Make the duration of the bullet travel so that the apparent speed is constant.
+                let bulletDuration = Double(self.INVADER_BULLET_VELOCITY * (invader.position.y / self.frame.height))
                 // fire the bullet
-                fireBullet(bullet: bullet, toDestination: bulletDestination, withDuration: 2.0, andSoundFileName: "InvaderBullet.wav")
+                fireBullet(bullet: bullet, toDestination: bulletDestination, withDuration: bulletDuration, andSoundFileName: "InvaderBullet.wav")
             }
         }
     }
