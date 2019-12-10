@@ -19,11 +19,19 @@ class MainMenuScene: SKScene {
     private var menuCreated = false
     private var gameScene : GameScene
     
+    /**
+     Non-Default Initializer.
+     - Parameter size: A CGSize indicating what the size of the Scene is. For bes behavior, it should match the viewing window size.
+     */
     override init(size: CGSize) {
         self.gameScene = GameScene(size: size)
         super.init(size: size)
     }
     
+    /**
+     Required initializer from the codable protocol
+     - Parameter aDecoder: An NSCoder which will deserialize this SKScene.
+     */
     required init?(coder aDecoder: NSCoder) {
         // I don't like this initializer, but it is necessary to compile, and will be overwritten
         // during the didMove function.
@@ -43,6 +51,9 @@ class MainMenuScene: SKScene {
         }
     }
     
+    /**
+     Creates a menu out of SKLabelNodes
+     */
     func createMenu() {
         // create a label for the game
         // Go to http://iosfonts.com/ for a list of all fonts we can use
@@ -77,6 +88,11 @@ class MainMenuScene: SKScene {
         self.addChild(highScoreLabel)
     }
     
+    /**
+     Checks for when the user lifts their finger from the screen and checks for button presses.
+     - Parameter touches: A set of touches from the user.
+     - Parameter event: An optional UIEvent that is not used in this implementation.
+     */
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         for touch in touches {
             let location = touch.location(in: self)
