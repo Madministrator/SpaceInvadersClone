@@ -31,6 +31,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private let RIGHT_MOVEMENT_NAME = "rightButton"
     private let FIRE_BUTTON_NAME = "fireButton"
     private let PAUSE_PLAY_NAME = "pauseOrPlay"
+    private let PAUSE_TEXTURE = SKTexture(imageNamed: "PauseButton")
+    private let PLAY_TEXTURE = SKTexture(imageNamed: "PlayButton")
     private let BUTTON_SIZE = CGSize(width: 60, height: 60)
     private let BUTTON_OFFSET : CGFloat = 15
     /// BITMASK constants for contact detection (not collision detection, we don't want physics)
@@ -207,22 +209,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(livesLabel)
         
         // setup the buttons which lets the user move the core cannon left and right
-        // TODO right now they're purple blocks, change that with graphics I get later.
-        let rightButton = SKSpriteNode(color: SKColor.purple, size: self.BUTTON_SIZE)
+        let rightButton = SKSpriteNode(texture: SKTexture(imageNamed: "RightArrow.png"))
         rightButton.name = self.RIGHT_MOVEMENT_NAME
         rightButton.position = CGPoint(x: frame.size.width - (self.BUTTON_OFFSET + rightButton.frame.size.width / 2),
                                        y: self.BUTTON_OFFSET + rightButton.frame.size.height / 2)
-        let leftButton = SKSpriteNode(color: SKColor.purple, size: self.BUTTON_SIZE)
+        // let leftButton = SKSpriteNode(color: SKColor.purple, size: self.BUTTON_SIZE)
+        let leftButton = SKSpriteNode(texture: SKTexture(imageNamed: "LeftArrow.png"))
         leftButton.name = self.LEFT_MOVEMENT_NAME
         leftButton.position = CGPoint(x: rightButton.frame.minX - leftButton.frame.size.width,
                                       y: self.BUTTON_OFFSET + leftButton.frame.size.height / 2)
         // setup the button which fires the core cannon
-        // TODO right now its an orange block, change that to a graphic.
-        let fireButton = SKSpriteNode(color: SKColor.orange, size: self.BUTTON_SIZE)
+        let fireButton = SKSpriteNode(texture: SKTexture(imageNamed: "FireButton.png"))
         fireButton.name = self.FIRE_BUTTON_NAME
         fireButton.position = CGPoint(x: self.BUTTON_OFFSET + fireButton.frame.size.width / 2, y: BUTTON_OFFSET + fireButton.frame.size.height / 2)
         
-        let pausePlayButton = SKSpriteNode(color: SKColor.gray, size: self.BUTTON_SIZE)
+        // let pausePlayButton = SKSpriteNode(color: SKColor.gray, size: self.BUTTON_SIZE)
+        let pausePlayButton = SKSpriteNode(texture: self.PAUSE_TEXTURE)
         pausePlayButton.name = self.PAUSE_PLAY_NAME
         pausePlayButton.position = CGPoint(x: self.frame.size.width - self.BUTTON_OFFSET - pausePlayButton.frame.size.width / 2, y: self.frame.height - self.BUTTON_OFFSET - pausePlayButton.frame.size.height / 2)
         
@@ -474,8 +476,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             } else if touchedNode.name == self.FIRE_BUTTON_NAME {
                 fireTheCoreCannon()
             } else if touchedNode.name == self.PAUSE_PLAY_NAME {
+                if let touchedSprite = touchedNode as? SKSpriteNode {
+                    touchedSprite.texture = self.isPaused ? self.PAUSE_TEXTURE : self.PLAY_TEXTURE
+                }
                 self.isPaused = !self.isPaused
-                // TODO switch out the icons when I have them.
             }
         }
     }
@@ -635,8 +639,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 let bullet = makeBullet(ofType: .InvaderBullet)
                 bullet.position = CGPoint(x: invader.position.x, y: invader.position.y - invader.frame.size.height / 2 + bullet.frame.size.height / 2)
                 
-                // setup a destination to be just below the bottom of the screen below the invader
-                let bulletDestination = CGPoint(x: invader.position.x, y: -(bullet.frame.size.height / 2))
+                // setup a destination to the ground below th core cannon
+                let bulletDestination = CGPoint(x: invader.position.x, y: 2.0 * self.BUTTON_OFFSET + self.BUTTON_SIZE.height  + (bullet.frame.size.height / 2))
                 
                 // fire the bullet
                 fireBullet(bullet: bullet, toDestination: bulletDestination, withDuration: 2.0, andSoundFileName: "InvaderBullet.wav")
@@ -694,6 +698,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
      already in the scene.
      */
     private func fireTheCoreCannon() {
+        // don't do anything if the game is paused
+        if self.isPaused {
+            return // do nothing
+        }
         // see if there is already a bullet from the core cannon in the scene
         let existingBullet = childNode(withName: BulletType.coreCannonBulletName)
         

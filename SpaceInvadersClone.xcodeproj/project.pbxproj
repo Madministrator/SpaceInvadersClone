@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		F420E59D2399911300ACF929 /* MainMenuScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = F420E59C2399911300ACF929 /* MainMenuScene.swift */; };
+		F420E5A32399B02400ACF929 /* LeftArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = F420E59E2399B02400ACF929 /* LeftArrow.png */; };
+		F420E5A42399B02400ACF929 /* RightArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = F420E59F2399B02400ACF929 /* RightArrow.png */; };
+		F420E5A52399B02400ACF929 /* PauseButton.png in Resources */ = {isa = PBXBuildFile; fileRef = F420E5A02399B02400ACF929 /* PauseButton.png */; };
+		F420E5A62399B02400ACF929 /* FireButton.png in Resources */ = {isa = PBXBuildFile; fileRef = F420E5A12399B02400ACF929 /* FireButton.png */; };
+		F420E5A72399B02400ACF929 /* PlayButton.png in Resources */ = {isa = PBXBuildFile; fileRef = F420E5A22399B02400ACF929 /* PlayButton.png */; };
 		F478C5E4237B37DC00BFABC9 /* GameOverScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = F478C5E3237B37DC00BFABC9 /* GameOverScene.swift */; };
 		F4CD287D2374A57F0042B7FC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4CD287C2374A57F0042B7FC /* AppDelegate.swift */; };
 		F4CD28812374A57F0042B7FC /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = F4CD28802374A57F0042B7FC /* Actions.sks */; };
@@ -57,6 +62,11 @@
 
 /* Begin PBXFileReference section */
 		F420E59C2399911300ACF929 /* MainMenuScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuScene.swift; sourceTree = "<group>"; };
+		F420E59E2399B02400ACF929 /* LeftArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LeftArrow.png; sourceTree = "<group>"; };
+		F420E59F2399B02400ACF929 /* RightArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = RightArrow.png; sourceTree = "<group>"; };
+		F420E5A02399B02400ACF929 /* PauseButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PauseButton.png; sourceTree = "<group>"; };
+		F420E5A12399B02400ACF929 /* FireButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = FireButton.png; sourceTree = "<group>"; };
+		F420E5A22399B02400ACF929 /* PlayButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PlayButton.png; sourceTree = "<group>"; };
 		F478C5E3237B37DC00BFABC9 /* GameOverScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverScene.swift; sourceTree = "<group>"; };
 		F4CD28792374A57F0042B7FC /* SpaceInvadersClone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpaceInvadersClone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4CD287C2374A57F0042B7FC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -189,6 +199,11 @@
 		F4D9587B23874CE3005E6453 /* Sprite Assets */ = {
 			isa = PBXGroup;
 			children = (
+				F420E5A12399B02400ACF929 /* FireButton.png */,
+				F420E59E2399B02400ACF929 /* LeftArrow.png */,
+				F420E5A02399B02400ACF929 /* PauseButton.png */,
+				F420E5A22399B02400ACF929 /* PlayButton.png */,
+				F420E59F2399B02400ACF929 /* RightArrow.png */,
 				F4D9586723874CDB005E6453 /* CoreCannon.png */,
 				F4D9586923874CDB005E6453 /* CoreCannon@2x.png */,
 				F4D9586223874CDB005E6453 /* InvaderA_00.png */,
@@ -313,14 +328,17 @@
 			files = (
 				F4D9585D23874035005E6453 /* InvaderHit.wav in Resources */,
 				F4D9586E23874CDC005E6453 /* InvaderB_01.png in Resources */,
+				F420E5A42399B02400ACF929 /* RightArrow.png in Resources */,
 				F4D9585723873FF9005E6453 /* CoreCannonHit.wav in Resources */,
 				F4D9587123874CDC005E6453 /* InvaderA_01.png in Resources */,
 				F4D9587223874CDC005E6453 /* InvaderC_01.png in Resources */,
 				F4D9587A23874CDC005E6453 /* InvaderC_00.png in Resources */,
+				F420E5A62399B02400ACF929 /* FireButton.png in Resources */,
 				F4D9587323874CDC005E6453 /* InvaderA_01@2x.png in Resources */,
 				F4CD28882374A57F0042B7FC /* Main.storyboard in Resources */,
 				F4D9587923874CDC005E6453 /* InvaderB_00@2x.png in Resources */,
 				F4D9587823874CDC005E6453 /* InvaderC_01@2x.png in Resources */,
+				F420E5A32399B02400ACF929 /* LeftArrow.png in Resources */,
 				F4D9585B23874035005E6453 /* CoreCannonBullet.wav in Resources */,
 				F4CD288A2374A5800042B7FC /* Assets.xcassets in Resources */,
 				F4D9587523874CDC005E6453 /* CoreCannon.png in Resources */,
@@ -331,6 +349,8 @@
 				F4D9587623874CDC005E6453 /* InvaderC_00@2x.png in Resources */,
 				F4D9585C23874035005E6453 /* InvaderBullet.wav in Resources */,
 				F4D9586F23874CDC005E6453 /* InvaderA_00@2x.png in Resources */,
+				F420E5A52399B02400ACF929 /* PauseButton.png in Resources */,
+				F420E5A72399B02400ACF929 /* PlayButton.png in Resources */,
 				F4D9587023874CDC005E6453 /* InvaderA_00.png in Resources */,
 				F4D9587723874CDC005E6453 /* CoreCannon@2x.png in Resources */,
 			);
