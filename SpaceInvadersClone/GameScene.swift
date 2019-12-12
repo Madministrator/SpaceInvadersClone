@@ -16,7 +16,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     /// Invading army constants
     private let INVADER_SPACING = CGSize(width: 12, height: 12)
     private let INVADER_ROW_COUNT = 6
-    private let INVADER_COLUMN_COUNT = 6
+    private let INVADER_MIN_COLUMN_COUNT = 6
     private let INVADER_VELOCITY : CGFloat = 10 // move the invaders 10 pixels per interval
     private let INVADER_MINIMUM_SPEED : CFTimeInterval = 0.03
     private let INVADER_BULLET_VELOCITY : CGFloat = 2.5
@@ -160,8 +160,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let invaderPositionY = CGFloat(row) * (InvaderType.size.height * 2) + baseOrigin.y
             var invaderPosition = CGPoint(x: baseOrigin.x, y: invaderPositionY)
             
-            // Move through each column in each row
-            for _ in 1..<self.INVADER_COLUMN_COUNT {
+            // Add more invader columns if we have a larger screen
+            // columns equivalent to one half the screen
+            let desiredColumnCount = Int((self.size.width / (InvaderType.size.width + self.INVADER_SPACING.width)) / 2)
+            
+            // Move through each column in each row (enforcing a minimum)
+            for _ in 1..<(self.INVADER_MIN_COLUMN_COUNT > desiredColumnCount ? self.INVADER_MIN_COLUMN_COUNT : desiredColumnCount) {
                 // make an invader for the current row and column
                 let invader = makeInvader(ofType: invaderType)
                 invader.position = invaderPosition
@@ -571,13 +575,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 if (node.frame.maxX >= node.scene!.size.width - 1.0) {
                     // We've hit the right side of the screen
                     proposedDirection = .downThenLeft
-                    self.setInvaderSpeed(to: self.invaderSpeed * 0.8)
+                    self.setInvaderSpeed(to: self.invaderSpeed * 0.85)
                     stop.pointee = true
                 }
             case .left:
                 if (node.frame.minX <= 1.0) {
                     proposedDirection = .downThenRight
-                    self.setInvaderSpeed(to: self.invaderSpeed * 0.8)
+                    self.setInvaderSpeed(to: self.invaderSpeed * 0.85)
                     stop.pointee = true
                 }
             case .downThenLeft:
